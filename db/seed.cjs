@@ -1,7 +1,7 @@
 const client = require('./client.cjs');
-const { createCustomer } = require('./customers.cjs');
-const { createRestaurant } = require('./restaurants.cjs');
-const { createReservation } = require('./reservations.cjs');
+const { createCustomer, fetchCustomers } = require('./customers.cjs');
+const { createRestaurant, fetchRestaurants } = require('./restaurants.cjs');
+const { createReservation, destroyReservation } = require('./reservations.cjs');
 
 const dropTables = async() => {
   try {
@@ -74,7 +74,22 @@ const syncAndSeed = async() => {
   await createReservation('2025-02-25', 3, oliveGarden.id, adamZapple.id);
   await createReservation('2025-02-25', 5, outback.id, dora.id);
   await createReservation('2025-03-03', 3, cityWok.id, dora.id);
+  await createReservation('2025-03-05', 5, cityWok.id, dora.id);
+  const doraCityWokApril09 = await createReservation('2025-04-09', 10, cityWok.id, dora.id);
+  const doraCityWokApril01 = await createReservation('2025-04-01', 8, cityWok.id, dora.id);
   console.log('RESERVATIONS CREATED');
+
+  console.log('GETTING ALL CUSTOMERS');
+  const allCustomers = await fetchCustomers();
+  console.log(allCustomers);
+
+  console.log('FETCHING RESTAURANTS');
+  const allResataurants = await fetchRestaurants();
+  console.log(allResataurants);
+
+  console.log('DELETING RESERVATIONS');
+  await destroyReservation(doraCityWokApril01.id);
+  await destroyReservation(doraCityWokApril09.id);
 
   await client.end();
   console.log('DISCONNECTED FROM THE DB');

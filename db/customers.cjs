@@ -15,6 +15,19 @@ const createCustomer = async(customerName) => {
   }
 }
 
+const fetchCustomers = async() => {
+  try {
+    const { rows: retrievedCustomers } = await client.query(`
+      SELECT * FROM customers;
+    `);
+
+    return retrievedCustomers;
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
-  createCustomer
+  createCustomer,
+  fetchCustomers
 }
