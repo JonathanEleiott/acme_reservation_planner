@@ -8,20 +8,27 @@ const createReservation = async(reservationDate, partyCount, restaurantId, custo
       RETURNING *;
     `);
     
-    const retrievedReservation = rows[0];
-    return retrievedReservation;
+    const createdReservation = rows[0];
+    return createdReservation;
   } catch(err) {
-    console.log(err);
+    throw Error(err);
   }
 }
 
-const destroyReservation = async(reservationId) => {
+const destroyReservation = async(reservationId, customerId) => {
   try {
-    await client.query(`
-      DELETE FROM reservations WHERE id=${reservationId};
+    const { rows } = await client.query(`
+      DELETE FROM reservations WHERE id=${reservationId} AND customer_id=${customerId}
+      RETURNING *;
     `);
+    
+    if(rows[0]) {
+      return rows[0];
+    } else {
+      throw Error({ message: 'reservation not found' });
+    }
   } catch(err) {
-    console.log(err);
+    throw Error(err);
   }
 }
 

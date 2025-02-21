@@ -88,8 +88,8 @@ const syncAndSeed = async() => {
   console.log(allResataurants);
 
   console.log('DELETING RESERVATIONS');
-  await destroyReservation(doraCityWokApril01.id);
-  await destroyReservation(doraCityWokApril09.id);
+  await destroyReservation(doraCityWokApril01.id, dora.id);
+  await destroyReservation(doraCityWokApril09.id, dora.id);
 
   await client.end();
   console.log('DISCONNECTED FROM THE DB');
