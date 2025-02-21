@@ -25,7 +25,20 @@ const destroyReservation = async(reservationId) => {
   }
 }
 
+const fetchReservations = async() => {
+  try {
+    const { rows: retrievedReservations } = await client.query(`
+      SELECT * FROM reservations;
+    `);
+
+    return retrievedReservations;
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   createReservation,
-  destroyReservation
+  destroyReservation,
+  fetchReservations
 }
