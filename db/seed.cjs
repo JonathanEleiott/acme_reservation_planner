@@ -1,4 +1,7 @@
 const client = require('./client.cjs');
+const { createCustomer } = require('./customers.cjs');
+const { createRestaurant } = require('./restaurants.cjs');
+const { createReservation } = require('./reservations.cjs');
 
 const dropTables = async() => {
   try {
@@ -30,7 +33,7 @@ const createTables = async() => {
         date DATE NOT NULL,
         party_count INTEGER NOT NULL,
         restaurant_id INTEGER REFERENCES restaurants(id) NOT NULL,
-        customers_id INTEGER REFERENCES customers(id) NOT NULL
+        customer_id INTEGER REFERENCES customers(id) NOT NULL
       );
     `);
   } catch(err) {
@@ -49,6 +52,29 @@ const syncAndSeed = async() => {
   console.log('CREATING TABLES');
   await createTables();
   console.log('TABLES CREATED');
+
+  console.log('CREATING CUSTOMERS');
+  const freddy = await createCustomer('Freddy');
+  const adamZapple = await createCustomer('Adam Zapple');
+  const dora = await createCustomer('Dora');
+  await createCustomer('Robert');
+  console.log('CUSTOMERS CREATED');
+
+  console.log('CREATING RESTAURANTS');
+  const oliveGarden = await createRestaurant('Olive Garden');
+  const redLobster = await createRestaurant('Red Lobster');
+  const outback = await createRestaurant('Outback');
+  const cityWok = await createRestaurant('City Wok');
+  await createRestaurant('Texas Roadhouse');
+  console.log('RESTAURANTS CREATED');
+
+  console.log('CREATING RESERVATIONS');
+  await createReservation('2025-02-22', 4, oliveGarden.id, freddy.id);
+  await createReservation('2025-03-01', 2, redLobster.id, freddy.id);
+  await createReservation('2025-02-25', 3, oliveGarden.id, adamZapple.id);
+  await createReservation('2025-02-25', 5, outback.id, dora.id);
+  await createReservation('2025-03-03', 3, cityWok.id, dora.id);
+  console.log('RESERVATIONS CREATED');
 
   await client.end();
   console.log('DISCONNECTED FROM THE DB');
