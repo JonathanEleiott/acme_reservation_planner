@@ -2,9 +2,23 @@ const client = require('./client.cjs');
 
 const createReservation = async(reservationDate, partyCount, restaurantId, customerId) => {
   try {
-    await client.query(`
+    const { rows } = await client.query(`
       INSERT INTO reservations (date, party_count, restaurant_id, customer_id)
-      VALUES('${reservationDate}', ${partyCount}, ${restaurantId}, ${customerId});
+      VALUES('${reservationDate}', ${partyCount}, ${restaurantId}, ${customerId})
+      RETURNING *;
+    `);
+    
+    const retrievedReservation = rows[0];
+    return retrievedReservation;
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+const destroyReservation = async(reservationId) => {
+  try {
+    await client.query(`
+      DELETE FROM reservations WHERE id=${reservationId};
     `);
   } catch(err) {
     console.log(err);
@@ -12,5 +26,6 @@ const createReservation = async(reservationDate, partyCount, restaurantId, custo
 }
 
 module.exports = {
-  createReservation
+  createReservation,
+  destroyReservation
 }
