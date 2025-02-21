@@ -1,5 +1,6 @@
 const { fetchCustomers } = require('./db/customers.cjs');
 const { fetchRestaurants } = require('./db/restaurants.cjs');
+const { fetchReservations } = require('./db/reservations.cjs');
 
 const client = require('./db/client.cjs');
 client.connect();
@@ -26,6 +27,15 @@ app.get('/api/restaurants', async(req, res, next) => {
     const allRestaurants = await fetchRestaurants();
 
     res.send(allRestaurants);
+  } catch(err) {
+    next(err);
+  }
+});
+
+app.get('/api/reservations', async(req, res, next) => {
+  try {
+    const allReservations = await fetchReservations();
+    res.send(allReservations);
   } catch(err) {
     next(err);
   }
